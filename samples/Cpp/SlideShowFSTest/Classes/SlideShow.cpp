@@ -65,15 +65,41 @@ bool SlideShow::init()
     // add the label as a child to this layer
     this->addChild(pLabel, 1);
 
-    // add "SlideShow" splash screen"
-    CCSprite* pSprite = CCSprite::create("Official_portrait_of_Barack_Obama.png");
+    std::vector<std::string> sourceimages = 
+        {"MagnoliaAlpha.png",
+         "Official_portrait_of_Barack_Obama.png",
+         "nasa-1.jpg",
+         "nasa-2.jpg",
+         "nasa-3.jpg",
+         "nasa-4.jpg",
+         "nasa-5.jpg",
+         "nasa-6.jpg",
+         "nasa-7.jpg",
+         "nasa-8.jpg",
+         "nasa-9.jpg",
+         "nasa-10.jpg",
+         "nasa-11.jpg",
+         "nasa-12.jpg",
+         "nasa-13.jpg",
+         "nasa-14.jpg",
+         "nasa-15.jpg",
+         "nasa-16.jpg"};
 
-    // position the sprite on the center of the screen
-    pSprite->setPosition(ccp(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
+    CCSprite* pSprite = NULL;
+    for(int i=0; i < sourceimages.size(); i++) {
+        if (NULL != pSprite) {
+            this->removeChild(pSprite, true);
+        }
 
-    // add the sprite as a child to this layer
-    this->addChild(pSprite, 0);
-    
+        pSprite = CCSprite::create(sourceimages[i].c_str());
+
+        // position the sprite on the center of the screen
+        pSprite->setPosition(ccp(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
+
+        // add the sprite as a child to this layer
+        this->addChild(pSprite, 0);        
+    }
+
     return true;
 }
 
