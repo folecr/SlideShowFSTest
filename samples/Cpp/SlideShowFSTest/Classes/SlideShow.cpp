@@ -1,5 +1,7 @@
 #include "SlideShow.h"
 #include "AppMacros.h"
+#include "time.h"
+
 USING_NS_CC;
 
 
@@ -16,6 +18,15 @@ CCScene* SlideShow::scene()
 
     // return the scene
     return scene;
+}
+
+/* return current time in milliseconds */
+static double
+now_ms(void)
+{
+    struct timespec res;
+    clock_gettime(CLOCK_MONOTONIC, &res);
+    return 1000.0*res.tv_sec + (double)res.tv_nsec/1e6;
 }
 
 // on "init" you need to initialize your instance
@@ -85,6 +96,10 @@ bool SlideShow::init()
          "nasa-15.jpg",
          "nasa-16.jpg"};
 
+    CCLog("Creating sprites...");
+
+    double time_start = now_ms();
+
     CCSprite* pSprite = NULL;
     for(int i=0; i < sourceimages.size(); i++) {
         if (NULL != pSprite) {
@@ -99,6 +114,11 @@ bool SlideShow::init()
         // add the sprite as a child to this layer
         this->addChild(pSprite, 0);        
     }
+
+    double time_end = now_ms();
+
+    CCLog("... done creating sprites");
+    CCLog("Time taken = %f millis", (double)(time_end - time_start));
 
     return true;
 }
