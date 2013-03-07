@@ -4,6 +4,14 @@
 
 USING_NS_CC;
 
+SlideShow::SlideShow() : cocos2d::CCLayer() {
+    CCSprite* pSprite = NULL;
+    time_start = 0;
+    time_end = 0;
+    sprite_index = 0;
+    spriteposition_x = 0;
+    spriteposition_y = 0;
+}
 
 CCScene* SlideShow::scene()
 {
@@ -76,53 +84,73 @@ bool SlideShow::init()
     // add the label as a child to this layer
     this->addChild(pLabel, 1);
 
-    std::vector<std::string> sourceimages = 
-        {"MagnoliaAlpha.png",
-         "Official_portrait_of_Barack_Obama.png",
-         "nasa-1.jpg",
-         "nasa-2.jpg",
-         "nasa-3.jpg",
-         "nasa-4.jpg",
-         "nasa-5.jpg",
-         "nasa-6.jpg",
-         "nasa-7.jpg",
-         "nasa-8.jpg",
-         "nasa-9.jpg",
-         "nasa-10.jpg",
-         "nasa-11.jpg",
-         "nasa-12.jpg",
-         "nasa-13.jpg",
-         "nasa-14.jpg",
-         "nasa-15.jpg",
-         "nasa-16.jpg"};
+    spriteposition = ccp(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y);
 
-    CCLog("Creating sprites...");
+    CCLog("Starting slideshow...");
 
-    double time_start = now_ms();
+    time_start = now_ms();
 
-    CCSprite* pSprite = NULL;
-    for(int i=0; i < sourceimages.size(); i++) {
-        if (NULL != pSprite) {
-            this->removeChild(pSprite, true);
-        }
-
-        pSprite = CCSprite::create(sourceimages[i].c_str());
-
-        // position the sprite on the center of the screen
-        pSprite->setPosition(ccp(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
-
-        // add the sprite as a child to this layer
-        this->addChild(pSprite, 0);        
-    }
-
-    double time_end = now_ms();
-
-    CCLog("... done creating sprites");
-    CCLog("Time taken = %f millis", (double)(time_end - time_start));
+    // Schedule the nextSprite()
+    sprite_index = 0;
+    CCDirector::sharedDirector()->getScheduler()->scheduleSelector(schedule_selector(SlideShow::nextSprite),
+                                                                   this, 0.0f,
+                                                                   kCCRepeatForever,
+                                                                   0.0f,
+                                                                   false);
 
     return true;
 }
 
+static std::vector<std::string> sourceimages = 
+    {"MagnoliaAlpha.png",
+     "Official_portrait_of_Barack_Obama.png",
+     "nasa-1.jpg",
+     "nasa-2.jpg",
+     "nasa-3.jpg",
+     "nasa-4.jpg",
+     "nasa-5.jpg",
+     "nasa-6.jpg",
+     "nasa-7.jpg",
+     "nasa-8.jpg",
+     "nasa-9.jpg",
+     "nasa-10.jpg",
+     "nasa-11.jpg",
+     "nasa-12.jpg",
+     "nasa-13.jpg",
+     "nasa-14.jpg",
+     "nasa-15.jpg",
+     "nasa-16.jpg"};
+
+void SlideShow::nextSprite(float dt) {
+    // CCLog("nextSprite ...");
+
+    if (sprite_index < sourceimages.size()) {
+        if (NULL != pSprite) {
+            this->removeChild(pSprite, true);
+        }
+
+        pSprite = CCSprite::create(sourceimages[sprite_index].c_str());
+
+        // position the sprite on the center of the screen
+        pSprite->setPosition(spriteposition);
+
+        // add the sprite as a child to this layer
+        this->addChild(pSprite, 0);        
+
+        // scheduler is set to repeat... so another nextSprite() will be scheduled
+        sprite_index++;
+    } else {
+        // unschedule nextSprite()
+        CCDirector::sharedDirector()->getScheduler()->unscheduleSelector(schedule_selector(SlideShow::nextSprite), this);
+
+        double time_end = now_ms();
+
+        CCLog("... done reading data, creating sprites and displaying them.");
+        CCLog("Time taken = %f millis", (double)(time_end - time_start));
+    }
+
+    // CCLog("... nextSprite done.");
+}
 
 void SlideShow::menuCloseCallback(CCObject* pSender)
 {
