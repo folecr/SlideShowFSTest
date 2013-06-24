@@ -3,7 +3,7 @@
 
 #include "cocos2d.h"
 
-class SlideShow : public cocos2d::CCLayer
+class SlideShow : public cocos2d::Layer
 {
 public:
     SlideShow();
@@ -12,10 +12,10 @@ public:
     virtual bool init();  
 
     // there's no 'id' in cpp, so we recommend returning the class instance pointer
-    static cocos2d::CCScene* scene();
+    static cocos2d::Scene* scene();
     
     // a selector callback
-    void menuCloseCallback(CCObject* pSender);
+    void menuCloseCallback(Object* pSender);
 
     // another selector callback that displays the next sprite in the list
 
@@ -25,10 +25,10 @@ public:
     void nextSprite(float dt);
 
 private:
-    cocos2d::CCSprite* pSprite;
+    cocos2d::Sprite* pSprite;
     int spriteposition_x;
     int spriteposition_y;
-    cocos2d::CCPoint spriteposition;
+    cocos2d::Point spriteposition;
     double time_start;
     double time_end;
     size_t sprite_index;

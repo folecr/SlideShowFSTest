@@ -8,14 +8,14 @@
 
 The reason for implement as private inheritance is to hide some interface call by CCDirector.
 */
-class  AppDelegate : private cocos2d::CCApplication
+class  AppDelegate : private cocos2d::Application
 {
 public:
     AppDelegate();
     virtual ~AppDelegate();
 
     /**
-    @brief    Implement CCDirector and CCScene init code here.
+    @brief    Implement Director and Scene init code here.
     @return true    Initialize success, app continue.
     @return false   Initialize failed, app terminate.
     */
